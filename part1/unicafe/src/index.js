@@ -13,17 +13,18 @@ const Percent = (props) => {
   return (<div>positive {(props.good) / (props.good + props.neutral + props.bad)} </div>)
 }
 
+const Statistic = (props) => {
+  return (<div>{props.text} {props.value}</div>)
+}
 const Statistics = (props) => {
   if ((props.good + props.neutral + props.bad) !== 0) {
-    console.log(props.good);
-    console.log(props.neutral);
-    console.log(props.bad);
 
     return (<div>
       <div><h1>statistics</h1></div>
-      <div>good {props.good}</div>
-      <div>neutral {props.neutral}</div>
-      <div>bad {props.bad}</div>
+      <Statistic text='good' value={props.good}></Statistic>
+      <Statistic text='neutral' value={props.neutral}></Statistic>
+      <Statistic text='bad' value={props.bad}></Statistic>
+
       <div>
         <All good={props.good} neutral={props.neutral} bad={props.bad}></All>
         <Average good={props.good} neutral={props.neutral} bad={props.bad}></Average>
@@ -33,9 +34,15 @@ const Statistics = (props) => {
   }
   else {
     return (<div><h1>statistics</h1>
-      <div>'no feedback given'</div></div>
+      <div>no feedback given</div></div>
     )
   }
+}
+
+const Button = (props) => {
+  return (<button onClick={() => props.func(props.value + 1)}>
+    {props.text}
+    </button>)
 }
 const App = () => {
   // tallenna napit omaan tilaansa
@@ -48,15 +55,10 @@ const App = () => {
     <div><div><h1>give feedback</h1></div>
 
       <div>
-        <button onClick={() => setGood(good + 1)}>
-          good
-    </button>
-        <button onClick={() => setNeutral(neutral + 1)}>
-          neutral
-    </button>
-        <button onClick={() => setBad(bad + 1)}>
-          bad
-    </button>
+      <Button func = {setGood} value={good} text='good' ></Button>
+      <Button func = {setNeutral} value={neutral} text='neutral' ></Button>
+      <Button func = {setBad} value={bad} text='bad' ></Button>
+
       </div>
       <Statistics good={good} neutral={neutral} bad={bad}></Statistics>
     </div>)
