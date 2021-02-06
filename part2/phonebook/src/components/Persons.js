@@ -2,7 +2,7 @@ import React from 'react'
 
 
 const Contact = ({ props }) => {
-    const phone = props.tel || 0
+    const phone = props.number || 0
     return (<li>{props.name} {phone}</li>)
 }
 
