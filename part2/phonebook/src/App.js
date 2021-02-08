@@ -3,6 +3,7 @@ import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import axios from 'axios'
+import personServ from './services/persons'
 
 const App = () => {
 	const [persons, setPersons] = useState([])
@@ -12,11 +13,10 @@ const App = () => {
 
 
 	const hook = () => {
-		axios
-			.get('http://localhost:3001/persons')
+		personServ.getAll()
 			.then(response => {
 				console.log('promise fulfilled')
-				setPersons(response.data)
+				setPersons(response)
 			})
 	}
 
@@ -35,6 +35,9 @@ const App = () => {
 		}
 		console.log('tel added', contact)
 		setPersons(persons.concat(contact))
+		personServ.create(contact).catch(error => {
+			console.log(error);
+		})
 		setNewName('')
 		setNewPhone('')
 	}
