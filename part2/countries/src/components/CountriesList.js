@@ -5,8 +5,9 @@ const CountryInfo = props => {
 	const [weather, setWeather] = useState({})
 
 	const hook = () => {
+		const api_key = process.env.REACT_APP_API_KEY
 		axios
-			.get('http://api.weatherstack.com/current?access_key=4c2b2fb0a928e8cab5b5816055cea3be&query=' + props.country.name)
+			.get('http://api.weatherstack.com/current?access_key=' + api_key + '&query=' + props.country.name)
 			.then(response => {
 				console.log('promise fulfilled')
 				setWeather(response.data)
@@ -15,7 +16,6 @@ const CountryInfo = props => {
 
 	useEffect(hook, [])
 
-	console.log(weather)
 	if (show) {
 		return <div>
 			<h2>{props.country.name}</h2>
@@ -54,7 +54,6 @@ const CountriesList = ({ list, search }) => {
 			.toLowerCase()
 			.includes(search.toLowerCase())
 	);
-	console.log(data)
 
 	if (data.length > 10) {
 		return <p>Too many matches, specify another filter</p>
