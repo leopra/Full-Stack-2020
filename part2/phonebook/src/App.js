@@ -27,18 +27,26 @@ const App = () => {
 
 		const found = persons.some(el => el.name === newName)
 		if (found === true) {
-			window.alert(`${newName} is already added to phonebook`)
+			const oldContact = persons.find(o => o.name === newName)
+			window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+			personServ.update(oldContact.id, { ...oldContact, number: newPhone }).then(updated => {
+				let notchangedpersons = persons.filter(p => p.id != updated.id);
+				let updatedState = [...notchangedpersons, updated]
+				setPersons(updatedState)
+				setNewName('')
+				setNewPhone('')
+				return
+			})
+		}
+		else {
+			console.log('tel added', contact)
+			setPersons(persons.concat(contact))
+			personServ.create(contact).catch(error => {
+				console.log(error);
+			})
 			setNewName('')
 			setNewPhone('')
-			return
 		}
-		console.log('tel added', contact)
-		setPersons(persons.concat(contact))
-		personServ.create(contact).catch(error => {
-			console.log(error);
-		})
-		setNewName('')
-		setNewPhone('')
 	}
 
 
@@ -58,12 +66,12 @@ const App = () => {
 
 	const deleteContact = id => {
 		personServ
-		  .remove(id)
-		  .then(() => {
-			const updatedPersons = persons.filter(p => p.id !== id);
-			setPersons(updatedPersons);
-		  })
-	  }
+			.remove(id)
+			.then(() => {
+				const updatedPersons = persons.filter(p => p.id !== id);
+				setPersons(updatedPersons);
+			})
+	}
 
 
 
