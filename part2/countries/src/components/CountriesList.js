@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-
 const CountryInfo = props => {
 	const [show, setShow] = useState(false);
+	const [weather, setWeather] = useState({})
 
+	const hook = () => {
+		axios
+			.get('http://api.weatherstack.com/current?access_key=4c2b2fb0a928e8cab5b5816055cea3be&query=' + props.country.name)
+			.then(response => {
+				console.log('promise fulfilled')
+				setWeather(response.data)
+			})
+	}
+
+	useEffect(hook, [])
+
+	console.log(weather)
 	if (show) {
 		return <div>
 			<h2>{props.country.name}</h2>
@@ -14,6 +26,15 @@ const CountryInfo = props => {
 				{props.country.languages && props.country.languages.map(lang => <li key={lang.name}>{lang.name}</li>)}
 			</ul>
 			<img src={props.country.flag} height="150" />
+			<h3>Weather in {props.country.name}</h3>
+			<p>temperature: {weather.current.temperature} Celsius</p>
+			<img src={weather.current.weather_icons} height="150" alt='weather image' />
+			<h3>wind: {weather.current.wind_speed} mph direction {weather.current.wind_dir}</h3>
+
+
+
+
+
 		</div>
 	}
 
