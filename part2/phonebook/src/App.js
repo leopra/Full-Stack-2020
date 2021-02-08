@@ -3,12 +3,18 @@ import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import personServ from './services/persons'
+import Notification from './components/Notification'
+import Error from './components/Error'
+
 
 const App = () => {
 	const [persons, setPersons] = useState([])
 	const [newName, setNewName] = useState('')
 	const [newPhone, setNewPhone] = useState('')
 	const [search, setSearch] = useState('')
+	const [notification, setNotification] = useState('')
+	const [error, setError] = useState('')
+
 
 
 	const hook = () => {
@@ -35,18 +41,27 @@ const App = () => {
 				setPersons(updatedState)
 				setNewName('')
 				setNewPhone('')
-				return
+				setNotification('Operation completed')
+				setTimeout(() => {
+					setNotification(null)
+				}, 5000)
 			})
 		}
 		else {
 			console.log('tel added', contact)
 			setPersons(persons.concat(contact))
-			personServ.create(contact).catch(error => {
+			personServ.create(contact).then(() => {
+				setNotification('Operation completed')
+				setTimeout(() => {
+					setNotification(null)
+				}, 5000)
+			}).catch(error => {
 				console.log(error);
 			})
 			setNewName('')
 			setNewPhone('')
 		}
+
 	}
 
 
@@ -70,7 +85,10 @@ const App = () => {
 			.then(() => {
 				const updatedPersons = persons.filter(p => p.id !== id);
 				setPersons(updatedPersons);
-			})
+			}).catch(() => {setError('error deleting user')
+				setTimeout(() => {
+				setError(null)
+			}, 5000)})
 	}
 
 
@@ -78,6 +96,8 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
+			<Notification message={notification} />
+			<Error message={error} />
 			<Filter value={search} onChange={handleSearchChange} />
 			<h2>Add a New</h2>
 			<PersonForm newName={newName} newPhone={newPhone} handleNameChange={handleNameChange} handleTelChange={handleTelChange} addContact={addContact}></PersonForm>
