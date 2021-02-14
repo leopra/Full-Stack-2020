@@ -35,7 +35,8 @@ const App = () => {
 		if (found === true) {
 			const oldContact = persons.find(o => o.name === newName)
 			window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
-			personServ.update(oldContact.id, { ...oldContact, number: newPhone }).then(updated => {
+			personServ.update(oldContact.id, {name: oldContact.name, number: newPhone }).then(updated => {
+				console.log('updated', updated)
 				let notchangedpersons = persons.filter(p => p.id != updated.id);
 				let updatedState = [...notchangedpersons, updated]
 				setPersons(updatedState)
@@ -48,10 +49,9 @@ const App = () => {
 			})
 		}
 		else {
-			console.log('tel added', contact)
-			setPersons(persons.concat(contact))
-			personServ.create(contact).then(() => {
-				setNotification('Operation completed')
+			personServ.create(contact).then((res) => {
+				setNotification('Operation completed', contact)
+				setPersons(persons.concat(res))
 				setTimeout(() => {
 					setNotification(null)
 				}, 5000)
