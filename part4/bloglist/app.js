@@ -5,15 +5,17 @@ const config = require('./utils/config')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 
+app.use(cors())
+app.use(express.json())
+
 const blogRouter = require('./controllers/blog')
-app.use('/api', blogRouter)
+app.use('/api/blogs', blogRouter)
 
 const mongoUrl = config.MONGODB_URI
 logger.info('connecting to', mongoUrl)
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: false, useFindAndModify: false, useCreateIndex: true })
 
-app.use(cors())
-app.use(express.json())
+
 
 module.exports = app
 
