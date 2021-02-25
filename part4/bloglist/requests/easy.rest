@@ -10,5 +10,17 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3003/api/blogs
+GET http://localhost:3005/api/blogs
+
+###
+PUT http://localhost:3005/api/blogs/60379a56326e3fd668396f3a
+Content-Type: application/json
+
+{
+  "id": "60379a56326e3fd668396f3a",
+  "title": "CHANGED",
+  "author": "deeeee",
+  "url": "dasfasfasfa",
+  "likes": 3
+}
 
