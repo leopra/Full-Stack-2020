@@ -2,6 +2,8 @@ const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const config = require('../utils/config')
+
 
 //TODO why populate user is singular, blogs plural?
 blogRouter.get('/', async (request, response) => {
@@ -10,6 +12,7 @@ blogRouter.get('/', async (request, response) => {
 
   response.json(blogs)
 })
+
 
 
 blogRouter.post('/', async (request, response) => {
@@ -41,10 +44,12 @@ blogRouter.post('/', async (request, response) => {
 
 })
 
+
+
 blogRouter.delete('/:id', async (request, response) => {
   const token = request.token
-
   const decodedToken = jwt.verify(token, config.SECRET)
+
   if (!request || !decodedToken) {
     return response.status(401).json( { error: 'token missing or invalid ' })
   }
@@ -58,10 +63,10 @@ blogRouter.delete('/:id', async (request, response) => {
   response.status(204).end()
 })
 
+
+
 //change a blog information
 blogRouter.put('/:id', async (request, response) => {
-  console.log(request.body)
-  console.log(request.params.id)
   const body = request.body
 
   const blog = {
@@ -72,8 +77,9 @@ blogRouter.put('/:id', async (request, response) => {
   }
 
   const res = await Blog.findByIdAndUpdate(request.params.id, blog)
-  console.log(res)
   response.json(res)
 })
+
+
 
 module.exports = blogRouter

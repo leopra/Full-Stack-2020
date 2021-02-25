@@ -10,6 +10,11 @@ const loginRouter = require('./controllers/login')
 const usersRouter = require('./controllers/users')
 const blogRouter = require('./controllers/blog')
 
+
+const mongoUrl = config.MONGODB_URI
+logger.info('connecting to', mongoUrl)
+mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: false, useFindAndModify: false, useCreateIndex: true })
+
 app.use(middleware.tokenExtractor)
 app.use(cors())
 app.use(express.json())
@@ -19,9 +24,8 @@ app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
 
-const mongoUrl = config.MONGODB_URI
-logger.info('connecting to', mongoUrl)
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: false, useFindAndModify: false, useCreateIndex: true })
+
+app.use(middleware.errorHandler)
 
 
 

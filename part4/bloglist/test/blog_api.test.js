@@ -1,10 +1,32 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
+const Blog = require('../models/blog')
 
 const api = supertest(app)
+const bearerluca = "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imx1Y2EiLCJpZCI6IjYwMzdlMzA2NDQyY2Q5NTllNmFjMjQ2MCIsImlhdCI6MTYxNDI4ODMwOX0.2lpXHFlEZ_tBv6RtV3mq4IEza1__MfII8KQpacdzvyc"
+const initialBlogs = [
+  {
+    title: 'cavolo',
+    author: 'doore',
+    url: 'www.sf.com',
+    likes: 7,
+    user: '60380a39d489e6ab5d8c1572'
+  },
+  {
+    title: 'pomodoro',
+    author: 'kult',
+    url: 'www.kult.com',
+    likes: 5,
+    user: '60380a39d489e6ab5d8c1572'
+  }
+]
 
-const InitialNumberBlogs = 3
+beforeEach(async () => {
+  await Blog.deleteMany({})
+  await Blog.insertMany(initialBlogs)
+
+})
 
 test('number of notes', async () => {
   const result = await api
@@ -12,7 +34,7 @@ test('number of notes', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-  expect(result.body.length).toBe(InitialNumberBlogs)
+  expect(result.body.length).toBe(initialBlogs.length)
 })
 
 test('every blog has id', async () => {
@@ -21,7 +43,6 @@ test('every blog has id', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-  console.log(result.body)
   result.body.map((blog) => expect(blog.id).toBeDefined())
 })
 
@@ -37,6 +58,7 @@ describe('POST BLOGS', () => {
 
     const result = await api
       .post('/api/blogs')
+      .set({ Authorization: bearerluca })
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -46,7 +68,7 @@ describe('POST BLOGS', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
-    expect(updatedblogs.body.length).toBe(InitialNumberBlogs + 1)
+    expect(updatedblogs.body.length).toBe(initialBlogs.length + 1)
   })
 
   test('new blog added 401', async () => {
@@ -77,12 +99,13 @@ test('if no likes, likes set to zero', async () => {
 
   const result = await api
     .post('/api/blogs')
+    .set({ Authorization: bearerluca })
     .send(noLikesBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  expect(result.body.likes).toBeDefined().toBe(0)
-
+  expect(result.body.likes).toBeDefined()
+  expect(result.body.likes).toBe(0)
 })
 
 test('if no title or url, response 400', async () => {
@@ -96,6 +119,7 @@ test('if no title or url, response 400', async () => {
 
   const result = await api
     .post('/api/blogs')
+    .set({ Authorization: bearerluca })
     .send(noTitleBlog)
     .expect(400)
     .expect('Content-Type', /application\/json/)
@@ -113,12 +137,14 @@ test('delete one Blog', async () => {
   }
   const toDelete = await api
     .post('/api/blogs')
+    .set({ Authorization: bearerluca })
     .send(Blog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
   const result = await api
     .delete(`/api/blogs/${toDelete.body.id}`)
+    .set({ Authorization: bearerluca })
     .expect(204)
 
 })
@@ -136,6 +162,7 @@ test('change Blog info', async () => {
   }
   const toChange = await api
     .post('/api/blogs')
+    .set({ Authorization: bearerluca })
     .send(blog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -143,6 +170,7 @@ test('change Blog info', async () => {
 
   const result = await api
     .put(`/api/blogs/${toChange.body.id}`)
+    .set({ Authorization: bearerluca })
     .send({ ...blog, "title": "CHANGED", })
     .expect(200)
 

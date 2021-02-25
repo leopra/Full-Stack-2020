@@ -4,7 +4,7 @@ POST http://localhost:{{port}}/api/users
 Content-Type: application/json
 
 {
-  "username":"luca",
+  "username":"aaaaaa",
   "name":"cordero",
   "password" : "12345"
 }
