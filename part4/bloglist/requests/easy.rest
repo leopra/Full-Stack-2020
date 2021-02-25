@@ -1,16 +1,19 @@
-POST http://localhost:3003/api/blogs
+@port = 3005
+
+POST http://localhost:{{port}}/api/blogs
 Content-Type: application/json
 
 {
-  "title": "dede",
-  "author": "deeeee",
+  "title": "fasfafaf",
+  "author": "deafeeee",
   "url": "dasfasfasfa",
-  "likes": 3
+  "likes": 3,
+  "user": "afasfafa"
 }
 
 ###
 
-GET http://localhost:3005/api/blogs
+GET http://localhost:{{port}}/api/blogs
 
 ###
 PUT http://localhost:3005/api/blogs/60379a56326e3fd668396f3a

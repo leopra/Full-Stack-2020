@@ -1,12 +1,14 @@
-POST http://localhost:3006/api/users
+@port = 3005
+
+POST http://localhost:{{port}}/api/users
 Content-Type: application/json
 
 {
-  "username":"aaaaaa",
-  "name":"bbbbbb",
+  "username":"luca",
+  "name":"cordero",
   "password" : "12345"
 }
 
 ###
 
-GET http://localhost:3007/api/users
+GET http://localhost:{{port}}/api/users
