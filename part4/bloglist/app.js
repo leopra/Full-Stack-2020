@@ -19,7 +19,7 @@ app.use('/api/users', usersRouter)
 
 const mongoUrl = config.MONGODB_URI
 logger.info('connecting to', mongoUrl)
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: false, useFindAndModify: false, useCreateIndex: true })
 
 
 

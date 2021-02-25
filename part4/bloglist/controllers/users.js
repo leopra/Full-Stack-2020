@@ -3,8 +3,11 @@ const usersRouter = require('express').Router()
 const User = require('../models/user')
 
 usersRouter.post('/', async (request, response) => {
-  const body = request.body
 
+  const body = request.body
+  if (!body.username || !body.password || body.username.length < 3 || body.password.length < 3) {
+    response.status(400).json({'error': 'error in username or password'})
+  }
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(body.password, saltRounds)
 
@@ -20,9 +23,9 @@ usersRouter.post('/', async (request, response) => {
 })
 
 usersRouter.get('/', async (request, response) => {
-    const body = request.body
-  
-    const res = await User.find({})
-    response.json(res)
-  })
+  const body = request.body
+
+  const res = await User.find({})
+  response.json(res)
+})
 module.exports = usersRouter

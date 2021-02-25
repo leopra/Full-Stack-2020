@@ -9,4 +9,4 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3006/api/users
+GET http://localhost:3007/api/users
