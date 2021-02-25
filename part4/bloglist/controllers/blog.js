@@ -3,14 +3,6 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  }
-  return null
-}
-
 //TODO why populate user is singular, blogs plural?
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -22,11 +14,9 @@ blogRouter.get('/', async (request, response) => {
 
 blogRouter.post('/', async (request, response) => {
   const body = request.body
-  const token = getTokenFrom(request)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-
-  if (!token || !decodedToken.id) {
+  if (!request.token || !decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
@@ -34,7 +24,7 @@ blogRouter.post('/', async (request, response) => {
     return response.status(400).json({ "result": "Bad Request" })
   }
 
-  const user = await User.findOne()
+  const user = await User.findById(decodedToken.id)
 
   const blog = new Blog({
     title: body.title,
@@ -52,6 +42,18 @@ blogRouter.post('/', async (request, response) => {
 })
 
 blogRouter.delete('/:id', async (request, response) => {
+  const token = request.token
+
+  const decodedToken = jwt.verify(token, config.SECRET)
+  if (!request || !decodedToken) {
+    return response.status(401).json( { error: 'token missing or invalid ' })
+  }
+
+  const blog = await Blog.findById(request.params.id)
+  if ( blog.user.toString() !== decodedToken.id.toString()) {
+    return response.status(401).json( { error: 'permission denied ' })
+  }
+
   const result = await Blog.deleteOne({ _id: request.params.id })
   response.status(204).end()
 })

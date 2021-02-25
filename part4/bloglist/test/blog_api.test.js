@@ -25,27 +25,46 @@ test('every blog has id', async () => {
   result.body.map((blog) => expect(blog.id).toBeDefined())
 })
 
-test('new blog added', async () => {
+describe('POST BLOGS', () => {
+  test('new blog added', async () => {
 
-  const newBlog = {
-    "title": 'paolino',
-    "author": 'paperino',
-    "url": 'www.paolinopaeprino.com',
-    "likes": 33
-  }
+    const newBlog = {
+      "title": 'paolino',
+      "author": 'paperino',
+      "url": 'www.paolinopaeprino.com',
+      "likes": 33
+    }
 
-  const result = await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+    const result = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
-  const updatedblogs = await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+    const updatedblogs = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-  expect(updatedblogs.body.length).toBe(InitialNumberBlogs + 1)
+    expect(updatedblogs.body.length).toBe(InitialNumberBlogs + 1)
+  })
+
+  test('new blog added 401', async () => {
+
+    const newBlog = {
+      "title": 'paolino',
+      "author": 'paperino',
+      "url": 'www.paolinopaeprino.com',
+      "likes": 33
+    }
+
+    const result = await api
+      .post('/api/blogs')
+      .set({ Authorization: 'fak' })
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+  })
 })
 
 test('if no likes, likes set to zero', async () => {
@@ -121,13 +140,15 @@ test('change Blog info', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  
+
   const result = await api
     .put(`/api/blogs/${toChange.body.id}`)
-    .send({...blog, "title": "CHANGED", })
+    .send({ ...blog, "title": "CHANGED", })
     .expect(200)
 
 })
+
+
 
 afterAll(() => {
   mongoose.connection.close()
