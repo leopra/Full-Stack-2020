@@ -35,7 +35,7 @@ const App = () => {
       })
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
-      ) 
+      )
       setUser(user)
       setUsername('')
       setPassword('')
@@ -45,6 +45,12 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleLogout = (event) => {
+    event.preventDefault()
+    setUser('')
+    window.localStorage.removeItem('loggedUser')
   }
 
   const loginForm = () => (
@@ -79,7 +85,7 @@ const App = () => {
       <h1>Blogs</h1>
       <Notification message={errorMessage} />
 
-      {user ? <div><p>{user.name} logged in</p></div>
+      {user ? <div><p>{user.name} logged in</p><button onClick={handleLogout}>logout</button></div>
         : loginForm()}
 
       {blogs.map(blog =>
