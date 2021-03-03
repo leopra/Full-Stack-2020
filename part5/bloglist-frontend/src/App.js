@@ -9,7 +9,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notification, setNotification] = useState(null)
+  const [sendBlog, setSendBlog] = useState({ 'title': '', 'author': '', 'url': '' })
 
 
   useEffect(() => {
@@ -36,13 +37,14 @@ const App = () => {
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setNotification('Wrong credentials')
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotification(null)
       }, 5000)
     }
   }
@@ -51,6 +53,32 @@ const App = () => {
     event.preventDefault()
     setUser('')
     window.localStorage.removeItem('loggedUser')
+  }
+
+  const handleBlogChange = (event, par) => {
+    const bl = { ...sendBlog }
+    bl[par] = event.target.value
+    setSendBlog(bl)
+  }
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    const blogObj = {
+      title: sendBlog.title,
+      author: sendBlog.author,
+      url: sendBlog.url
+    }
+
+    blogService
+      .create(blogObj)
+      .then(ret => {
+        setBlogs(blogs.concat(ret))
+        setSendBlog({ 'title': '', 'author': '', 'url': '' })
+        setNotification(ret)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+      })
   }
 
   const loginForm = () => (
@@ -80,12 +108,42 @@ const App = () => {
     </div >
   )
 
+  const formBlog = () => (
+    <form onSubmit={addBlog}>
+      <h2>Create New</h2>
+      <div>
+        title:
+      <input
+          value={sendBlog.title}
+          onChange={(e) => handleBlogChange(e, 'title')}
+        />
+      </div>
+      <div>
+        author:
+      <input
+          value={sendBlog.author}
+          onChange={(e) => handleBlogChange(e, 'author')}
+        />
+      </div>
+      <div>
+        url:
+      <input
+          value={sendBlog.url}
+          onChange={(e) => handleBlogChange(e, 'url')}
+        />
+      </div>
+      <button type="submit">save</button>
+    </form>
+  )
+
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification message={errorMessage} />
+      <Notification message={notification} />
 
-      {user ? <div><p>{user.name} logged in</p><button onClick={handleLogout}>logout</button></div>
+      {user ? <div><p>{user.name} logged in</p><button onClick={handleLogout}>logout</button>{formBlog()}
+      </div>
+
         : loginForm()}
 
       {blogs.map(blog =>
