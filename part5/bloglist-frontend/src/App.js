@@ -16,10 +16,12 @@ const App = () => {
   const [notification, setNotification] = useState(null)
 
 
-  useEffect(() => async () => {
-    const blogs = await blogService.getAll()
-    setBlogs(blogs)
-
+  useEffect(() => {
+    async function getData() {
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    }
+    getData()
   }, [])
 
   useEffect(() => {
@@ -71,40 +73,51 @@ const App = () => {
 
 
 
-const loginForm = () => (
-  <Togglable buttonLabel='login'>
-    <LoginForm
-      username={username}
-      password={password}
-      handleUsernameChange={({ target }) => setUsername(target.value)}
-      handlePasswordChange={({ target }) => setPassword(target.value)}
-      handleSubmit={handleLogin}
-    />
-  </Togglable>
-)
+  const loginForm = () => (
+    <Togglable buttonLabel='login'>
+      <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
+        handleSubmit={handleLogin}
+      />
+    </Togglable>
+  )
 
-const formBlog = () => (
-  <Togglable buttonLabel='new note'>
-    <FormBlog
-      createBlog={addBlog}
-    />
-  </Togglable>
-)
-
-return (
-  <div>
-    <h1>Blogs</h1>
-    <Notification message={notification} />
-
-    {user ? <div><p>{user.name} logged in</p><button onClick={handleLogout}>logout</button>
-      {formBlog()}
+  const formBlog = () => (
+    <div>
+      <Togglable buttonLabel='create new blog'>
+        <FormBlog
+          createBlog={addBlog}
+        />
+      </Togglable>
     </div>
+  )
 
-      : loginForm()}
+  return (
+    <div>
+      <h1>Blogs</h1>
+      <Notification message={notification} />
 
-    {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
-  </div>
-)
+      {user ? <div><p>{user.name} logged in</p><button onClick={handleLogout}>logout</button><div><span></span></div>
+        {formBlog()}
+      </div>
+
+        : loginForm()}
+
+      {blogs.map(blog => {
+        return (<Blog
+          user={blog.user}
+          removeBlog={() => { }}
+          updateLike={() => { }}
+          key={blog.id}
+          blog={blog}
+        />)
+      }
+      )}
+    </div>
+  )
 }
 
 export default App
