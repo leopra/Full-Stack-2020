@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react'
 
-const FormBlog = ({createBlog}) => {
+const FormBlog = ({ createBlog }) => {
 
   const [sendBlog, setSendBlog] = useState({ 'title': '', 'author': '', 'url': '' })
 

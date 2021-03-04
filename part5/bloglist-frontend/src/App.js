@@ -84,12 +84,12 @@ const App = () => {
     } catch (err) {
       console.error(err)
       setNotification('error')
-      }
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
     }
-  
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
+
 
   const doLike = async (id, blogObject) => {
     try {
@@ -143,7 +143,7 @@ const App = () => {
 
         : loginForm()}
 
-      {blogs.sort((a,b) => (b.likes - a.likes)).map(blog => {
+      {blogs.sort((a, b) => (b.likes - a.likes)).map(blog => {
         return (<Blog
           user={blog.user}
           removeBlog={deleteBlog}

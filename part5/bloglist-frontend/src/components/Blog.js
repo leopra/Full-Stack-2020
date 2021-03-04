@@ -19,7 +19,7 @@ const Blog = ({ blog, doLike, removeBlog, user }) => {
   }
 
   const updateLikes = () => {
-    const { id, author, url, title, user , likes} = blog
+    const { id, author, url, title, user, likes } = blog
     const updatedBlog = {
       user: user,
       likes: likes + 1,
@@ -27,8 +27,8 @@ const Blog = ({ blog, doLike, removeBlog, user }) => {
       author,
       url,
     }
-    setPostedBy(postedBy || blog.user?.name)
-    setUsername(username || blog.user?.username)
+    setPostedBy(postedBy || blog.user.name)
+    setUsername(username || blog.user.username)
     doLike(id, updatedBlog)
   }
 
@@ -43,7 +43,7 @@ const Blog = ({ blog, doLike, removeBlog, user }) => {
       <span>{blog.author}</span>
       <button
         onClick={toggleExpanded} style={show ? hidestyle : showstyle}>View
-        </button>
+      </button>
       <button
         onClick={toggleExpanded} style={!show ? hidestyle : showstyle}>Hide
       </button>
@@ -65,12 +65,12 @@ const Blog = ({ blog, doLike, removeBlog, user }) => {
           <span> {blog.user.name}</span>
         </div>
       </div>
-      {(blog.user?.username === user.username ||
+      {(blog.user.username === user.username ||
         username === user.username) && (
-          <button onClick={HandleDeleteBlog}>
+        <button onClick={HandleDeleteBlog}>
             Remove
-          </button>
-        )}
+        </button>
+      )}
     </div>
   )
 }
