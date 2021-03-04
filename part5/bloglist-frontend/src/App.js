@@ -71,6 +71,26 @@ const App = () => {
     }, 5000)
   }
 
+  const deleteBlog = async (id) => {
+    try {
+      const bl = blogs.filter((blog) => blog.id === id)
+      console.log(bl)
+
+      if (window.confirm(`Remove ${bl[0].title}?`)) {
+        await blogService.deleteBlog(id)
+
+        setBlogs(blogs.filter((blog) => blog.id !== id))
+      }
+    } catch (err) {
+      console.error(err)
+      setNotification('error')
+      }
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  
+
   const doLike = async (id, blogObject) => {
     try {
       await blogService.update(id, blogObject)
@@ -126,7 +146,7 @@ const App = () => {
       {blogs.sort((a,b) => (b.likes - a.likes)).map(blog => {
         return (<Blog
           user={blog.user}
-          removeBlog={() => { }}
+          removeBlog={deleteBlog}
           doLike={doLike}
           key={blog.id}
           blog={blog}

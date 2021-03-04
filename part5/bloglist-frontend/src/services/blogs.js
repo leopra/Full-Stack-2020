@@ -1,14 +1,12 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
 
-let token = null
-
-const config = {
-  headers: { Authorization: `${token}` }
+let config = {
+  headers: { Authorization: null }
 }
 
 const setToken = newToken => {
-  token = `bearer ${newToken}`
+  config.headers.Authorization = `bearer ${newToken}`
 }
 
 const getAll = async () => {
@@ -17,7 +15,7 @@ const getAll = async () => {
 }
 
 const create = async (newObject) => {
-
+  
   const request = await axios.post(baseUrl, newObject, config)
   return request.data
 }
@@ -28,4 +26,10 @@ const update = async (id, updatedObject) => {
 
 }
 
-export default { getAll, setToken, create, update }
+const deleteBlog = async (id) => {
+  const request = await axios.delete(`${baseUrl}/${id}`, config)
+  return request.data
+
+}
+
+export default { getAll, setToken, create, update, deleteBlog }

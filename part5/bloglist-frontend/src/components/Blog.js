@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, doLike, deleteBlog, user }) => {
+const Blog = ({ blog, doLike, removeBlog, user }) => {
 
   const hidestyle = {
     display: 'none'
@@ -32,7 +32,10 @@ const Blog = ({ blog, doLike, deleteBlog, user }) => {
     doLike(id, updatedBlog)
   }
 
-  
+  const HandleDeleteBlog = () => {
+    removeBlog(blog.id)
+  }
+
   return (
     <div>
       <span>{blog.title}</span>
@@ -64,7 +67,7 @@ const Blog = ({ blog, doLike, deleteBlog, user }) => {
       </div>
       {(blog.user?.username === user.username ||
         username === user.username) && (
-          <button onClick={deleteBlog}>
+          <button onClick={HandleDeleteBlog}>
             Remove
           </button>
         )}

@@ -2,7 +2,7 @@
 
 POST http://localhost:{{port}}/api/blogs
 Content-Type: application/json
-authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imx1Y2EiLCJpZCI6IjYwMzdlMzA2NDQyY2Q5NTllNmFjMjQ2MCIsImlhdCI6MTYxNDI4ODQwNn0.ppIoQk0JbO5YTILxvu19pllm2S2FdBiggDABt2zOBrM"
+authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imxlb25hcmRvIiwiaWQiOiI2MDNmOTNmOTE4YmYzNjgxNTFkOTJjYjciLCJpYXQiOjE2MTQ4NzgxOTJ9.R2aO7PEq5K7bnV43zubxJTsCMxerqAcJLnkyqsWZKWE
 
 {
   "title": "fasfafaf",
@@ -29,6 +29,6 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:{{port}}/api/blogs/6038122039a87fbf3cf224e1
+DELETE http://localhost:{{port}}/api/blogs/6040c5fe060bb5502fe30db3
 authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imx1Y2EiLCJpZCI6IjYwMzdlMzA2NDQyY2Q5NTllNmFjMjQ2MCIsImlhdCI6MTYxNDI3NjYyNX0.PPqVTAhKiFVorGecMNZzWHaNh9Sjp9AaLDB1XYHnYEQ
 
