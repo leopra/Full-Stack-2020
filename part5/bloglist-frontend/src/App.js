@@ -71,7 +71,24 @@ const App = () => {
     }, 5000)
   }
 
-
+  const doLike = async (id, blogObject) => {
+    try {
+      await blogService.update(id, blogObject)
+      const updatedBlog = {
+        ...blogObject,
+        id,
+      }
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updatedBlog)))
+    } catch (err) {
+      console.error(err)
+      setNotification({
+        error: 'error!!',
+      })
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
 
   const loginForm = () => (
     <Togglable buttonLabel='login'>
@@ -110,7 +127,7 @@ const App = () => {
         return (<Blog
           user={blog.user}
           removeBlog={() => { }}
-          updateLike={() => { }}
+          doLike={doLike}
           key={blog.id}
           blog={blog}
         />)

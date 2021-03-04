@@ -18,6 +18,21 @@ const Blog = ({ blog, doLike, deleteBlog, user }) => {
     setShow(!show)
   }
 
+  const updateLikes = () => {
+    const { id, author, url, title, user , likes} = blog
+    const updatedBlog = {
+      user: user,
+      likes: likes + 1,
+      title,
+      author,
+      url,
+    }
+    setPostedBy(postedBy || blog.user?.name)
+    setUsername(username || blog.user?.username)
+    doLike(id, updatedBlog)
+  }
+
+  
   return (
     <div>
       <span>{blog.title}</span>
@@ -39,12 +54,12 @@ const Blog = ({ blog, doLike, deleteBlog, user }) => {
         </div>
         <span>Likes</span>
         <span>{blog.likes}</span>
-        <button onClick={() => { }}>
+        <button onClick={updateLikes}>
           Like
         </button>
         <div>
           <span>Posted by: </span>
-          <span> {blog.user?.name || postedBy}</span>
+          <span> {blog.user.name}</span>
         </div>
       </div>
       {(blog.user?.username === user.username ||
