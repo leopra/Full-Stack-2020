@@ -16,10 +16,10 @@ const App = () => {
   const [notification, setNotification] = useState(null)
 
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+  useEffect(() => async () => {
+    const blogs = await blogService.getAll()
+    setBlogs(blogs)
+
   }, [])
 
   useEffect(() => {
@@ -58,54 +58,53 @@ const App = () => {
     window.localStorage.removeItem('loggedUser')
   }
 
-  const addBlog = (blogObject) => {
-    blogService
-      .create(blogObject)
-      .then(ret => {
-        setBlogs(blogs.concat(ret))
-        console.log(ret)
-        setNotification(JSON.stringify(ret) + ' ADDED')
-        setTimeout(() => {
-          setNotification(null)
-        }, 5000)
-      })
+  const addBlog = async (blogObject) => {
+    const ret = await blogService.create(blogObject)
+
+    setBlogs(blogs.concat(ret))
+    console.log(ret)
+    setNotification(JSON.stringify(ret) + ' ADDED')
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
 
 
-  const loginForm = () => (
-    <Togglable buttonLabel='login'>
-      <LoginForm
-        username={username}
-        password={password}
-        handleUsernameChange={({ target }) => setUsername(target.value)}
-        handlePasswordChange={({ target }) => setPassword(target.value)}
-        handleSubmit={handleLogin}
-      />
-    </Togglable>
-  )
 
-  const formBlog = () => (
-    <Togglable buttonLabel='new note'>
-      <FormBlog
-        createBlog={addBlog}
-      />
-    </Togglable>
-  )
+const loginForm = () => (
+  <Togglable buttonLabel='login'>
+    <LoginForm
+      username={username}
+      password={password}
+      handleUsernameChange={({ target }) => setUsername(target.value)}
+      handlePasswordChange={({ target }) => setPassword(target.value)}
+      handleSubmit={handleLogin}
+    />
+  </Togglable>
+)
 
-  return (
-    <div>
-      <h1>Blogs</h1>
-      <Notification message={notification} />
+const formBlog = () => (
+  <Togglable buttonLabel='new note'>
+    <FormBlog
+      createBlog={addBlog}
+    />
+  </Togglable>
+)
 
-      {user ? <div><p>{user.name} logged in</p><button onClick={handleLogout}>logout</button>
+return (
+  <div>
+    <h1>Blogs</h1>
+    <Notification message={notification} />
+
+    {user ? <div><p>{user.name} logged in</p><button onClick={handleLogout}>logout</button>
       {formBlog()}
-      </div>
-
-        : loginForm()}
-
-      {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
     </div>
-  )
+
+      : loginForm()}
+
+    {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+  </div>
+)
 }
 
 export default App
