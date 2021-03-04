@@ -123,7 +123,7 @@ const App = () => {
 
         : loginForm()}
 
-      {blogs.map(blog => {
+      {blogs.sort((a,b) => (b.likes - a.likes)).map(blog => {
         return (<Blog
           user={blog.user}
           removeBlog={() => { }}
