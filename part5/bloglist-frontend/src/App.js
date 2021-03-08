@@ -43,6 +43,7 @@ const App = () => {
         'loggedUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
+      console.log(user)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -63,7 +64,7 @@ const App = () => {
   const addBlog = async (blogObject) => {
     const ret = await blogService.create(blogObject)
 
-    setBlogs(blogs.concat(ret))
+    setBlogs(blogs.concat({...ret, user: {...user}}))
     console.log(ret)
     setNotification(JSON.stringify(ret) + ' ADDED')
     setTimeout(() => {
@@ -145,7 +146,7 @@ const App = () => {
 
       {blogs.sort((a, b) => (b.likes - a.likes)).map(blog => {
         return (<Blog
-          user={blog.user}
+          actualuser={user}
           removeBlog={deleteBlog}
           doLike={doLike}
           key={blog.id}

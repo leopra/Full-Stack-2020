@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+import './Blog.css';
 
-const Blog = ({ blog, doLike, removeBlog, user }) => {
+const Blog = ({ blog, doLike, removeBlog, actualuser }) => {
 
+  console.log(blog)
   const hidestyle = {
     display: 'none'
   }
@@ -12,7 +14,6 @@ const Blog = ({ blog, doLike, removeBlog, user }) => {
   const [show, setShow] = useState(false)
   const [postedBy, setPostedBy] = useState('')
   const [username, setUsername] = useState('')
-
 
   const toggleExpanded = () => {
     setShow(!show)
@@ -36,11 +37,20 @@ const Blog = ({ blog, doLike, removeBlog, user }) => {
     removeBlog(blog.id)
   }
 
+  const renderDeleteButton = () => {
+    if (blog.user.username === actualuser?.username) {
+        return (
+          <button onClick={HandleDeleteBlog}>
+            Remove
+          </button>)
+    }
+  }
+
   return (
     <div>
-      <span>{blog.title}</span>
+      <span className='titlediv'>{blog.title}</span>
       <span>Author: </span>
-      <span>{blog.author}</span>
+      <span className='authordiv'>{blog.author}</span>
       <button
         onClick={toggleExpanded} style={show ? hidestyle : showstyle}>View
       </button>
@@ -48,29 +58,23 @@ const Blog = ({ blog, doLike, removeBlog, user }) => {
         onClick={toggleExpanded} style={!show ? hidestyle : showstyle}>Hide
       </button>
 
-      <div style={!show ? hidestyle : showstyle}>
+      <div data-testid='behidden' style={!show ? hidestyle : showstyle}>
         <div>
           <span>{blog.url}</span>
         </div>
         <div>
-          <span></span>
         </div>
         <span>Likes</span>
         <span>{blog.likes}</span>
-        <button onClick={updateLikes}>
+        <button id='likebutton' onClick={updateLikes}>
           Like
         </button>
         <div>
           <span>Posted by: </span>
-          <span> {blog.user.name}</span>
+          <span> {blog.user.username}</span>
         </div>
       </div>
-      {(blog.user.username === user.username ||
-        username === user.username) && (
-        <button onClick={HandleDeleteBlog}>
-            Remove
-        </button>
-      )}
+      {renderDeleteButton()}
     </div>
   )
 }

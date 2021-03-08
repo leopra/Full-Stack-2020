@@ -26,21 +26,21 @@ const FormBlog = ({ createBlog }) => {
     <h2>Create New</h2>
     <div>
       title:
-      <input
+      <input className='title'
         value={sendBlog.title}
         onChange={(e) => handleBlogChange(e, 'title')}
       />
     </div>
     <div>
       author:
-      <input
+      <input id='authorinput' className='author'
         value={sendBlog.author}
         onChange={(e) => handleBlogChange(e, 'author')}
       />
     </div>
     <div>
       url:
-      <input
+      <input className='url'
         value={sendBlog.url}
         onChange={(e) => handleBlogChange(e, 'url')}
       />
