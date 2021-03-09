@@ -47,7 +47,7 @@ const Blog = ({ blog, doLike, removeBlog, actualuser }) => {
   }
 
   return (
-    <div>
+    <div data-cy="blog">
       <span className='titlediv'>{blog.title}</span>
       <span>Author: </span>
       <span className='authordiv'>{blog.author}</span>
@@ -65,7 +65,7 @@ const Blog = ({ blog, doLike, removeBlog, actualuser }) => {
         <div>
         </div>
         <span>Likes</span>
-        <span>{blog.likes}</span>
+        <span data-cy="likes">{blog.likes}</span>
         <button id='likebutton' onClick={updateLikes}>
           Like
         </button>
