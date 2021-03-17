@@ -9,7 +9,6 @@ const anedReducer = (state = initialState, action) => {
 
     case 'VOTE':
       const id = action.data.res.id
-      console.log('asfafff', id)
       return state.map(aned => (aned.id === id) ? { ...aned, votes: aned.votes + 1 } : aned)
 
     case 'NEW_ANED':
@@ -24,7 +23,6 @@ const anedReducer = (state = initialState, action) => {
 }
 
 export const createAnecdote = (data) => {
-  console.log('fa', data)
   return async dispatch => {
     const res = await anecdoteService.createNewAned(data)
     dispatch({
@@ -35,7 +33,6 @@ export const createAnecdote = (data) => {
 }
 
 export const doVote = (votedAnecdote) => {
-  console.log(votedAnecdote)
   return async dispatch => {
     const res = await anecdoteService.updateAned({ ...votedAnecdote, votes: votedAnecdote.votes + 1 })
     dispatch({
