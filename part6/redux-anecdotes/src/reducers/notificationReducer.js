@@ -30,10 +30,8 @@ export const removeNotification = () => {
 
 export const showNotification = (message, timeout) => {
   return (dispatch) => {
-    console.log(action, 'AAAAAAAAAAAAA')
     const action = setNotification(message)
     dispatch(action)
-
 
     setTimeout(() => {
       dispatch(removeNotification())

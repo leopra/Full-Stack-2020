@@ -7,6 +7,7 @@ const Filter = () => {
 
   const handleChange = (event) => {
     const filterValue = event.target.value
+    console.log(filterValue)
     dispatch(filter(filterValue))
   }
 
