@@ -8,7 +8,7 @@ const anedReducer = (state = initialState, action) => {
   switch (action.type) {
 
     case 'VOTE':
-      const id = action.data.votedAnecdote
+      const id = action.data.res.id
       console.log('asfafff', id)
       return state.map(aned => (aned.id === id) ? { ...aned, votes: aned.votes + 1 } : aned)
 
@@ -24,23 +24,34 @@ const anedReducer = (state = initialState, action) => {
 }
 
 export const createAnecdote = (data) => {
-  return {
-    type: "NEW_ANED",
-    data: data
+  console.log('fa', data)
+  return async dispatch => {
+    const res = await anecdoteService.createNewAned(data)
+    dispatch({
+      type: "NEW_ANED",
+      data: res
+    })
   }
 }
 
 export const doVote = (votedAnecdote) => {
-    return {
+  console.log(votedAnecdote)
+  return async dispatch => {
+    const res = await anecdoteService.updateAned({ ...votedAnecdote, votes: votedAnecdote.votes + 1 })
+    dispatch({
       type: "VOTE",
-      data: { votedAnecdote }
-    }
+      data: { res }
+    })
+  }
 }
 
-export const initAnecdotes = (anecdotes) => {
-  return {
-    type: 'INIT',
-    data: anecdotes
+export const initAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch({
+      type: 'INIT',
+      data: anecdotes
+    })
   }
 }
 
