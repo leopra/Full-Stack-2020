@@ -1,0 +1,34 @@
+@port = 3005
+
+POST http://localhost:{{port}}/api/blogs
+Content-Type: application/json
+authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imxlb25hcmRvIiwiaWQiOiI2MDNmOTNmOTE4YmYzNjgxNTFkOTJjYjciLCJpYXQiOjE2MTQ4NzgxOTJ9.R2aO7PEq5K7bnV43zubxJTsCMxerqAcJLnkyqsWZKWE
+
+{
+  "title": "fasfafaf",
+  "author": "deafeeee",
+  "url": "dasfasfasfa",
+  "likes": 3
+}
+
+###
+
+GET http://localhost:{{port}}/api/blogs
+
+###
+PUT http://localhost:3005/api/blogs/60379a56326e3fd668396f3a
+Content-Type: application/json
+
+{
+  "id": "60379a56326e3fd668396f3a",
+  "title": "CHANGED",
+  "author": "deeeee",
+  "url": "dasfasfasfa",
+  "likes": 3
+}
+
+###
+
+DELETE http://localhost:{{port}}/api/blogs/6040c5fe060bb5502fe30db3
+authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imx1Y2EiLCJpZCI6IjYwMzdlMzA2NDQyY2Q5NTllNmFjMjQ2MCIsImlhdCI6MTYxNDI3NjYyNX0.PPqVTAhKiFVorGecMNZzWHaNh9Sjp9AaLDB1XYHnYEQ
+

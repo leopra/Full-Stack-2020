@@ -1,0 +1,8 @@
+@port = 3005
+POST http://localhost:{{port}}/api/login
+Content-Type: application/json
+
+{
+  "username":"luca",
+  "password" : "12345"
+}
