@@ -6,10 +6,18 @@ import Notification from './components/Notification'
 import Togglable from './components/Toggable'
 import LoginForm from './components/LoginForm'
 import FormBlog from './components/FormBlog'
+import UserList from './components/UserList'
+import User from './components/User'
+import { setAllUsers } from './reducers/allUsersReducer'
 
 import { useDispatch } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
+import { setUser } from './reducers/userReducer'
+import { useSelector } from 'react-redux'
 
+import {
+  Switch, Route
+} from "react-router-dom"
 
 const App = () => {
 
@@ -18,7 +26,8 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+
+  const user = useSelector((state) => state.user)
 
   useEffect(() => {
     async function getData() {
@@ -32,9 +41,17 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(setUser(user))
       blogService.setToken(user.token)
     }
+  }, [])
+
+
+  useEffect(() => {
+    async function getData() {
+      dispatch(setAllUsers())
+    }
+    getData()
   }, [])
 
   const handleLogin = async (event) => {
@@ -48,18 +65,17 @@ const App = () => {
       )
       blogService.setToken(user.token)
       console.log(user)
-      setUser(user)
+      dispatch(setUser(user))
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log("except")
       dispatch(setNotification('Wrong credentials', 5000))
     }
   }
 
   const handleLogout = (event) => {
     event.preventDefault()
-    setUser('')
+    dispatch(setUser(''))
     window.localStorage.removeItem('loggedUser')
   }
 
@@ -131,17 +147,27 @@ const App = () => {
       </div>
 
         : loginForm()}
+      <Switch>
+        <Route exact path="/users">
+          <UserList />
+        </Route>
+        <Route path="/:id">
+          <User />
+        </Route>
+        <Route exact path="/">
+          {blogs.sort((a, b) => (b.likes - a.likes)).map(blog => {
+            return (<Blog
+              actualuser={user}
+              removeBlog={deleteBlog}
+              doLike={doLike}
+              key={blog.id}
+              blog={blog}
+            />)
+          }
+          )}
+        </Route>
+      </Switch>
 
-      {blogs.sort((a, b) => (b.likes - a.likes)).map(blog => {
-        return (<Blog
-          actualuser={user}
-          removeBlog={deleteBlog}
-          doLike={doLike}
-          key={blog.id}
-          blog={blog}
-        />)
-      }
-      )}
     </div>
   )
 }
