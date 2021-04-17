@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import './Blog.css';
+import { Link } from 'react-router-dom'
 
 const Blog = ({ blog, doLike, removeBlog, actualuser }) => {
 
@@ -38,18 +39,19 @@ const Blog = ({ blog, doLike, removeBlog, actualuser }) => {
 
   const renderDeleteButton = () => {
     if (blog.user.username === actualuser?.username) {
-        return (
-          <button onClick={HandleDeleteBlog}>
-            Remove
-          </button>)
+      return (
+        <button onClick={HandleDeleteBlog}>
+          Remove
+        </button>)
     }
   }
 
   return (
     <div data-cy="blog">
-      <span className='titlediv'>{blog.title}</span>
-      <span>Author: </span>
-      <span className='authordiv'>{blog.author}</span>
+      <Link to={`/blogs/${blog.id}`}
+      ><span className='titlediv'>{blog.title}</span>
+        <span>Author: </span>
+        <span className='authordiv'>{blog.author}</span></Link>
       <button
         onClick={toggleExpanded} style={show ? hidestyle : showstyle}>View
       </button>

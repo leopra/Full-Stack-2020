@@ -147,11 +147,15 @@ const App = () => {
       </div>
 
         : loginForm()}
+
       <Switch>
         <Route exact path="/users">
           <UserList />
         </Route>
-        <Route path="/:id">
+        <Route exact path="/users/:id">
+          <User />
+        </Route>
+        <Route exact path="/blogs/:id">
           <User />
         </Route>
         <Route exact path="/">
@@ -166,6 +170,8 @@ const App = () => {
           }
           )}
         </Route>
+
+
       </Switch>
 
     </div>
