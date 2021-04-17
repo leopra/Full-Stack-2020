@@ -138,11 +138,12 @@ const resolvers = {
       const numBooks = authors.map((author) =>
         books.filter((book) => book.author === author.name)
       )
-      console.log(numBooks)
-      return numBooks.map((item) => ({
+      temp = numBooks.map((item) => ({
         bookCount: item.length,
         name: item[0].author,
       }))
+      return (authors.map(au => { const bookCount = temp.find(a => a.name === au.name).bookCount
+            return {...au, bookCount: bookCount}}))
     }
   },
 
@@ -161,8 +162,9 @@ const resolvers = {
       const author = authors.find(a => a.name === args.name)
       if (!author) { return null }
       const new_author = { ...author, born: args.setBornTo }
-      authors = authors.map(a => { if (a.name !== args.name) { return a } })
-      authors = authors.concat(new_author)
+      authors = authors.filter(a => a.name !== args.name)
+      authors = authors.concat([new_author])
+
       return new_author
     }
   }
