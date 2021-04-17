@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { ALL_AUTHORS, UPDATE_AUTHOR } from "../queries"
 import { useQuery } from '@apollo/client'
 import { useMutation } from "@apollo/client"
+import Select from "react-select";
 
 const Authors = (props) => {
   const [name, setName] = useState("")
@@ -14,6 +15,8 @@ const Authors = (props) => {
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   })
+
+
 
   const submit = async (event) => {
     event.preventDefault()
@@ -31,8 +34,16 @@ const Authors = (props) => {
     return null
   }
 
+  let possibleAuth = []
+
   if (!result.loading) {
     authors = result.data?.allAuthors
+    possibleAuth = authors.map((op) => {
+      return {
+        value: op.name,
+        label: op.name,
+      }
+    })
   }
   if (result.loading) {
     return <div>loading...</div>
@@ -71,9 +82,11 @@ const Authors = (props) => {
               <label>
                 name
           </label>
-              <input
-                onChange={({ target }) => setName(target.value)}
-              /></div>
+          <Select
+          placeholder="author..."
+          options={possibleAuth}
+          onChange={({ label }) => setName(label)}
+        /></div>
             <div>
               <label>
                 born
