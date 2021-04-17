@@ -1,0 +1,14 @@
+
+@port = 4000
+POST http://localhost:{{port}}
+Content-Type: application/json
+
+{
+"query": {" query:
+  allBooks { 
+    title 
+    author
+    published 
+    genres
+   "}
+}

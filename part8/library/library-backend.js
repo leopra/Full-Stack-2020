@@ -152,7 +152,6 @@ const resolvers = {
       if (books.find(p => p.title === args.title)) {
         throw new UserInputError('Title must be unique')
       }
-      console.log(args)
       const book = { ...args, id: uuid() }
       books = books.concat(book)
       return book
@@ -164,7 +163,6 @@ const resolvers = {
       const new_author = { ...author, born: args.setBornTo }
       authors = authors.map(a => { if (a.name !== args.name) { return a } })
       authors = authors.concat(new_author)
-      console.log(authors)
       return new_author
     }
   }
