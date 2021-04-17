@@ -18,11 +18,11 @@ let authors = [
     id: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
     born: 1821
   },
-  { 
+  {
     name: 'Joshua Kerievsky', // birthyear not known
     id: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
   },
-  { 
+  {
     name: 'Sandi Metz', // birthyear not known
     id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
   },
@@ -61,7 +61,7 @@ let books = [
     author: 'Joshua Kerievsky',
     id: "afa5de01-344d-11e9-a414-719c6709cf3e",
     genres: ['refactoring', 'patterns']
-  },  
+  },
   {
     title: 'Practical Object-Oriented Design, An Agile Primer Using Ruby',
     published: 2012,
@@ -97,6 +97,7 @@ const typeDefs = gql`
   type Author {
     name: String!
     id: ID!
+    bookCount: Int
     born: Int
   }
 
@@ -127,13 +128,24 @@ const resolvers = {
     bookCount: () => books.length,
     authorCount: () => authors.length,
     allBooks: (root, args) => {
-      if (args.author) { return books.filter(b => b.author === args.author)}
+      if (args.author) { return books.filter(b => b.author === args.author) }
       else if (args.genre) {
-        return books.filter(b => b.genres.includes(args.genre)) }
-      else { return books}
-      },
-    allAuthors: () => authors
+        return books.filter(b => b.genres.includes(args.genre))
+      }
+      else { return books }
+    },
+    allAuthors: () => {
+      const numBooks = authors.map((author) =>
+        books.filter((book) => book.author === author.name)
+      )
+      console.log(numBooks)
+      return numBooks.map((item) => ({
+        bookCount: item.length,
+        name: item[0].author,
+      }))
+    }
   },
+
 
   Mutation: {
     addBook: (root, args) => {
@@ -148,14 +160,14 @@ const resolvers = {
 
     editAuthor: (root, args) => {
       const author = authors.find(a => a.name === args.name)
-      if (!author) {return null}
-      const new_author = {...author, born: args.setBornTo}
-      authors = authors.map(a => {if (a.name !== args.name) {return a}})
+      if (!author) { return null }
+      const new_author = { ...author, born: args.setBornTo }
+      authors = authors.map(a => { if (a.name !== args.name) { return a } })
       authors = authors.concat(new_author)
       console.log(authors)
       return new_author
     }
-  }  
+  }
 }
 
 const server = new ApolloServer({
