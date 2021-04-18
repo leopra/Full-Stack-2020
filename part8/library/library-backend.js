@@ -99,6 +99,7 @@ const resolvers = {
 
   Mutation: {
     addBook: async (root, args) => {
+      try {
       let book
       let author = await Author.findOne({ name: args.author })
 
@@ -121,15 +122,24 @@ const resolvers = {
       }
       book = await Book.findOne({ title: args.title }).populate("author")
       return book
+    }
+    catch (error) {
+      throw new UserInputError(error.message)
+    }
     },
 
     editAuthor: async (root, args) => {
+      try {
       const author = await Author.findOne({ name: args.name })
       if (!author) { return null }
       author.born = args.setBornTo
       await author.save()
 
       return author
+      }
+      catch (error) {
+        throw new UserInputError(error.message)
+      }
     }
   }
 }
