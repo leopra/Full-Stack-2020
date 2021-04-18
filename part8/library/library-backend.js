@@ -86,20 +86,24 @@ const resolvers = {
       return context.currentUser
     },
     allBooks: async (root, args) => {
+      let books
       if (args.author) {
         const author = await Author.findOne({ name: args.author })
-        const books = await Book.find({
+        books = await Book.find({
           author: { $in: author.id }
         }).populate("author")
         return books
       }
       else if (args.genre) {
-        const books = await Book.find({
+        books = await Book.find({
           genres: { $in: args.genre }
         }).populate("author")
         return books
       }
-      else { return Book.find({}).populate("author") }
+
+      books = await Book.find({}).populate("author")
+      console.log(books)
+      return books
     },
     allAuthors: async () => {
       const authors = await Author.find({})
