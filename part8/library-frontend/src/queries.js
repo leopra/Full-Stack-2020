@@ -55,6 +55,15 @@ export const NEW_BOOK = gql`
     }
 `
 
+export const ME = gql`
+  query {
+    me {
+      username
+      favoriteGenre
+    }
+  }
+`
+
 export const UPDATE_AUTHOR = gql`
   mutation updateAuthor($name: String!, $setBornTo: Int!) {
     editAuthor(name: $name, setBornTo: $setBornTo) {
