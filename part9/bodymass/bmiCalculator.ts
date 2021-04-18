@@ -1,5 +1,5 @@
 type WeightResult = 'Very severely underweight' | 'Severely underweight' | 'Underweight' | 'Normal (healthy weight)' | 'Overweight' |
-  'Obese Class I (Moderately obese)' | 'Obese Class II (Severely obese)' | 'Obese Class III (Very severely obese)'| 'Error'
+  'Obese Class I (Moderately obese)' | 'Obese Class II (Severely obese)' | 'Obese Class III (Very severely obese)'| 'Error';
 
 export const calculateBmi = (height: number, weight: number): WeightResult => {
   const res = weight / Math.pow(height / 100, 2);

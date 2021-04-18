@@ -40,8 +40,8 @@ export const calculateExercises = (
   };
 };
 
-const a: Array<number> = JSON.parse(process.argv[2])
-const b: number = Number(process.argv[3])
+//const a: Array<number> = JSON.parse(process.argv[2]);
+//const b: number = Number(process.argv[3]);
 
 //console.log(calculateExercises([2,2,2,2,2,2,2], 3))
-console.log(calculateExercises(a, b))
+//console.log(calculateExercises(a, b))
