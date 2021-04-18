@@ -7,7 +7,10 @@ const jwt = require("jsonwebtoken")
 const Book = require("./models/books")
 const Author = require("./models/authors")
 
-const url = process.env.MONGO_URI;
+const url = process.env.MONGO_URI
+
+const _countBy = require("lodash.countby")
+const { collectFields } = require('graphql/execution/execute')
 
 const mongoUrl = url
 console.log('connecting to', mongoUrl)
@@ -55,18 +58,18 @@ const resolvers = {
   Query: {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
-    
+
     allBooks: async (root, args) => {
-      if (args.author) { 
+      if (args.author) {
         const author = await Author.findOne({ name: args.author })
         const books = await Book.find({
-            author: { $in: author.id } 
+          author: { $in: author.id }
         }).populate("author")
         return books
       }
       else if (args.genre) {
         const books = await Book.find({
-            genres: { $in: args.genre }
+          genres: { $in: args.genre }
         }).populate("author")
         return books
       }
@@ -74,27 +77,49 @@ const resolvers = {
     },
     allAuthors: async () => {
       const authors = await Author.find({})
+
+      // get bookCount, TODO bad way??
+      const books = await Book.find({})
+      const authorBooks = books.map((b) => b.author)
+      const authorCounts = _countBy(authorBooks, (id) => id)
+
       const authorsObject = authors.map((author) => {
         return {
           name: author.name,
           born: author.born,
-          //bookCount: author.books.length, TODO find solution for this
+          bookCount: authorCounts[author.id] || null,
           id: author.id,
         }
       })
 
-      return authorsObject;
+      return authorsObject
     },
   },
 
 
   Mutation: {
-    addBook: (root, args) => {
-      if (books.find(p => p.title === args.title)) {
-        throw new UserInputError('Title must be unique')
+    addBook: async (root, args) => {
+      let book
+      let author = await Author.findOne({ name: args.author })
+
+      if (author) {
+        book = new Book({ ...args, author: author._id })
+        await book.save()
       }
-      const book = { ...args, id: uuid() }
-      books = books.concat(book)
+
+      if (!author) {
+        const _id = mongoose.Types.ObjectId()
+        book = new Book({ ...args, author: _id })
+
+        author = new Author({
+          name: args.author,
+          _id,
+        })
+
+        await author.save()
+        await book.save()
+      }
+      book = await Book.findOne({ title: args.title }).populate("author")
       return book
     },
 
@@ -102,7 +127,7 @@ const resolvers = {
       const author = await Author.findOne({ name: args.name })
       if (!author) { return null }
       author.born = args.setBornTo
-      await author.save();
+      await author.save()
 
       return author
     }
