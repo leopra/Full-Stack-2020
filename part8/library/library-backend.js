@@ -6,8 +6,10 @@ const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken")
 const Book = require("./models/books")
 const Author = require("./models/authors")
+const User = require("./models/users")
 
 const url = process.env.MONGO_URI
+const JWT_SECRET_KEY = process.env.SECRET_KEY
 
 const _countBy = require("lodash.countby")
 const { collectFields } = require('graphql/execution/execute')
@@ -17,6 +19,16 @@ console.log('connecting to', mongoUrl)
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
 
 const typeDefs = gql`
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Book {
     title: String!
     published: Int!
@@ -37,6 +49,7 @@ const typeDefs = gql`
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User 
   }
 
   type Mutation {
@@ -51,6 +64,16 @@ const typeDefs = gql`
       name: String!
       setBornTo: Int
     ): Author
+
+    createUser(
+      username: String!
+      favoriteGenre: String!
+    ): User
+
+    login(
+      username: String!
+      password: String!
+    ): Token
   }  
 `
 
@@ -59,6 +82,9 @@ const resolvers = {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
 
+    me: (root, args, context) => {
+      return context.currentUser
+    },
     allBooks: async (root, args) => {
       if (args.author) {
         const author = await Author.findOne({ name: args.author })
@@ -98,55 +124,101 @@ const resolvers = {
 
 
   Mutation: {
-    addBook: async (root, args) => {
-      try {
-      let book
-      let author = await Author.findOne({ name: args.author })
+    addBook: async (root, args, context) => {
 
-      if (author) {
-        book = new Book({ ...args, author: author._id })
-        await book.save()
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        throw new AuthenticationError("not authenticated")
       }
-
-      if (!author) {
-        const _id = mongoose.Types.ObjectId()
-        book = new Book({ ...args, author: _id })
-
-        author = new Author({
-          name: args.author,
-          _id,
-        })
-
-        await author.save()
-        await book.save()
-      }
-      book = await Book.findOne({ title: args.title }).populate("author")
-      return book
-    }
-    catch (error) {
-      throw new UserInputError(error.message)
-    }
-    },
-
-    editAuthor: async (root, args) => {
       try {
-      const author = await Author.findOne({ name: args.name })
-      if (!author) { return null }
-      author.born = args.setBornTo
-      await author.save()
+        let book
+        let author = await Author.findOne({ name: args.author })
 
-      return author
+        if (author) {
+          book = new Book({ ...args, author: author._id })
+          await book.save()
+        }
+
+        if (!author) {
+          const _id = mongoose.Types.ObjectId()
+          book = new Book({ ...args, author: _id })
+
+          author = new Author({
+            name: args.author,
+            _id,
+          })
+
+          await author.save()
+          await book.save()
+        }
+        book = await Book.findOne({ title: args.title }).populate("author")
+        return book
       }
       catch (error) {
         throw new UserInputError(error.message)
       }
-    }
+    },
+
+    editAuthor: async (root, args, context) => {
+      const currentUser = context.currentUser
+
+      if (!currentUser) {
+        throw new AuthenticationError("not authenticated")
+      }
+      try {
+        const author = await Author.findOne({ name: args.name })
+        if (!author) { return null }
+        author.born = args.setBornTo
+        await author.save()
+
+        return author
+      }
+      catch (error) {
+        throw new UserInputError(error.message)
+      }
+    },
+
+    createUser: (root, args) => {
+      const user = new User({ ...args })
+
+      return user.save()
+        .catch(error => {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        })
+    },
+
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username })
+
+      if (!user || args.password !== 'secret') {
+        throw new UserInputError("wrong credentials")
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      }
+
+      return { value: jwt.sign(userForToken, JWT_SECRET_KEY) }
+    },
   }
 }
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+      const decodedToken = jwt.verify(
+        auth.substring(7), JWT_SECRET_KEY
+      )
+      const currentUser = await User.findById(decodedToken.id)
+      return { currentUser }
+    }
+  }
 })
 
 
