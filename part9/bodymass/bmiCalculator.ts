@@ -1,7 +1,7 @@
 type WeightResult = 'Very severely underweight' | 'Severely underweight' | 'Underweight' | 'Normal (healthy weight)' | 'Overweight' |
   'Obese Class I (Moderately obese)' | 'Obese Class II (Severely obese)' | 'Obese Class III (Very severely obese)'| 'Error'
 
-const calculateres = (height: number, weight: number): WeightResult => {
+export const calculateBmi = (height: number, weight: number): WeightResult => {
   const res = weight / Math.pow(height / 100, 2);
   if (res < 15) {
     return 'Very severely underweight';
@@ -25,9 +25,9 @@ const calculateres = (height: number, weight: number): WeightResult => {
 };
 
 
-const a: number = Number(process.argv[2])
-const b: number = Number(process.argv[3])
+//const a: number = Number(process.argv[2])
+//const b: number = Number(process.argv[3])
 //Call the function in the same file with hard-coded parameters and print out the result. The code
-console.log(calculateres(a, b));
+//console.log(calculateres(a, b));
 //should print the following message
 //Normal (healthy weight)
