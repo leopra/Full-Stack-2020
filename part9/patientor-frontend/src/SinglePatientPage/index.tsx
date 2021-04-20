@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientInfo } from "../state";
 import Axios from "axios";
-import { Patient } from "../types";
+import { Patient, Entry } from "../types";
+import EntryInfo from "./EntryInfo";
 
 const SinglePatientPage = () => {
   const [{ patient }, dispatch] = useStateValue();
@@ -38,6 +39,10 @@ const SinglePatientPage = () => {
       <div>
         <span>occupation:</span> <span>{patient?.occupation}</span>
       </div>
+      <h3>Entries</h3>
+      {patient?.entries?.map((entry: Entry) => (
+        <EntryInfo key={entry.id} entry={entry} />
+      ))}
     </section>
   );
 };
