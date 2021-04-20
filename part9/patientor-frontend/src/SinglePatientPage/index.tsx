@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
-import { useStateValue } from "../state";
+import { useStateValue, setPatientInfo } from "../state";
 import Axios from "axios";
 import { Patient } from "../types";
 
@@ -16,10 +16,7 @@ const SinglePatientPage = () => {
           `${apiBaseUrl}/patients/${id}`
         );
 
-        dispatch({
-          type: "SET_PATIENT_INFO",
-          payload: patientDetailsFromApi,
-        });
+        dispatch(setPatientInfo(patientDetailsFromApi));
       } catch (e) {
         console.error(e);
       }
