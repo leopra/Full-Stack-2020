@@ -1,9 +1,9 @@
 
 import React from "react";
-import { CourseEntry } from "../types";
+import { CoursePart } from "../types";
 
 
-const Total = ({courseParts}  : {courseParts : CourseEntry[]}) => {
+const Total = ({courseParts}  : {courseParts : CoursePart[]}) => {
   return (<p>
     Number of exercises{" "}
     {courseParts.reduce((carry, part) => carry + part.exerciseCount, 0)}
